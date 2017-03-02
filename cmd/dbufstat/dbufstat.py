@@ -311,7 +311,21 @@ def get_compstring(c):
                     "ZIO_COMPRESS_GZIP_6",  "ZIO_COMPRESS_GZIP_7",
                     "ZIO_COMPRESS_GZIP_8",  "ZIO_COMPRESS_GZIP_9",
                     "ZIO_COMPRESS_ZLE",     "ZIO_COMPRESS_LZ4",
-                    "ZIO_COMPRESS_FUNCTION"]
+                    "ZIO_COMPRESS_FUNCTION","ZIO_COMPRESS_LZ4FAST_1",
+                    "ZIO_COMPRESS_LZ4FAST_2","ZIO_COMPRESS_LZ4FAST_3",
+                    "ZIO_COMPRESS_LZ4FAST_4","ZIO_COMPRESS_LZ4FAST_5",
+                    "ZIO_COMPRESS_LZ4FAST_6","ZIO_COMPRESS_LZ4FAST_7",
+                    "ZIO_COMPRESS_LZ4FAST_8","ZIO_COMPRESS_LZ4FAST_9",
+                    "ZIO_COMPRESS_LZ4FAST_10","ZIO_COMPRESS_LZ4FAST_11",
+                    "ZIO_COMPRESS_LZ4FAST_12","ZIO_COMPRESS_LZ4FAST_13",
+                    "ZIO_COMPRESS_LZ4FAST_14","ZIO_COMPRESS_LZ4FAST_15",
+                    "ZIO_COMPRESS_LZ4FAST_16","ZIO_COMPRESS_LZ4FAST_17",
+                    "ZIO_COMPRESS_LZ4FAST_18","ZIO_COMPRESS_LZ4FAST_19",
+                    "ZIO_COMPRESS_LZ4FAST_20","ZIO_COMPRESS_LZ4FAST_30",
+                    "ZIO_COMPRESS_LZ4FAST_40","ZIO_COMPRESS_LZ4FAST_50",
+                    "ZIO_COMPRESS_LZ4FAST_60","ZIO_COMPRESS_LZ4FAST_70",
+                    "ZIO_COMPRESS_LZ4FAST_80","ZIO_COMPRESS_LZ4FAST_90",
+                    "ZIO_COMPRESS_LZ4FAST_100","ZIO_COMPRESS_META_FUNCTIONS"]
 
     # If "-rr" option is used, don't convert to string representation
     if raw > 1:
