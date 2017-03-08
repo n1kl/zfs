@@ -7,7 +7,7 @@
 #include <sys/dmu_objset.h>
 
 
-enum zio_compress ac_compress[QOS_COMPESS_LEVELS] = {
+enum zio_compress qos_compression[QOS_COMPESS_LEVELS] = {
 	ZIO_COMPRESS_LZ4,
 	ZIO_COMPRESS_GZIP_1,
 	ZIO_COMPRESS_GZIP_2,
@@ -25,26 +25,14 @@ enum zio_compress ac_compress[QOS_COMPESS_LEVELS] = {
 enum zio_compress qos_compress_select(zio_t *zio, int wanted_throughput) {
 	enum zio_compress res = ZIO_COMPRESS_LZ4;
 	wanted_throughput+=5;
-	zio_t *pio = DMU_META_DNODE(zio->io_prop.zp_os)->dn_zio; //top os zio
+	zio_t *pio = DMU_META_DNODE(zio->io_prop.zp_os)->dn_zio;
 
-	zio->io_temp_parent = pio;
-
-
-	if (pio) {
-
+	if (pio != NULL) {
 		uint64_t trans = 1000; //mb/s
 		uint8_t next_level = pio->io_compress_level;
-
-
-		uint64_t compress_time;
-		uint64_t exp_pipespeed_avg = 0;
-
-
-
-		compress_time = (gethrtime() - pio->io_qos_timestamp);
-		exp_pipespeed_avg = (pio->io_qos_lsize * trans) / compress_time;
-
-
+		uint64_t compress_time = (gethrtime() - pio->io_qos_timestamp);
+		uint64_t exp_pipespeed_avg = (pio->io_qos_lsize * trans) / compress_time;
+		zio->io_temp_parent = pio;
 
 		if (exp_pipespeed_avg) {
 			if (exp_pipespeed_avg < wanted_throughput ) {
@@ -55,16 +43,11 @@ enum zio_compress qos_compress_select(zio_t *zio, int wanted_throughput) {
 				if (next_level < QOS_COMPESS_LEVELS-1) {
 					next_level++;
 				}
-
 			}
 			zio->io_compress_level = next_level;
 		}
-
-		res =  ac_compress[next_level];
+		res =  qos_compression[next_level];
 	}
-
-
-
 	return res;
 }
 
@@ -74,14 +57,12 @@ void qos_update(zio_t *zio, uint64_t psize) {
 
 	zio_t *pio = zio->io_temp_parent;
 
-	if (pio) {
-
+	if (pio != NULL) {
 		mutex_enter(&pio->io_lock);
 		pio->io_qos_size += psize;
 		pio->io_qos_lsize += zio->io_lsize;
 		pio->io_compress_level = zio->io_compress_level;
 		mutex_exit(&pio->io_lock);
-
 	}
 }
 
