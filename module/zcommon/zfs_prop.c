@@ -143,7 +143,8 @@ zfs_prop_init(void)
 		{ "lz4fast-70",	ZIO_COMPRESS_LZ4FAST_70 },
 		{ "lz4fast-80",	ZIO_COMPRESS_LZ4FAST_80 },
 		{ "lz4fast-90",	ZIO_COMPRESS_LZ4FAST_90 },
-		{ "lz4fast-100",	ZIO_COMPRESS_LZ4FAST_100 },
+		{ "lz4fast-100", ZIO_COMPRESS_LZ4FAST_100 },
+		{ "auto", ZIO_COMPRESS_AUTO },
 		{ NULL }
 	};
 

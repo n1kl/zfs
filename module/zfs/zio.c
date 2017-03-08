@@ -639,6 +639,10 @@ zio_create(zio_t *pio, spa_t *spa, uint64_t txg, const blkptr_t *bp,
 	zio->io_state[ZIO_WAIT_READY] = (stage >= ZIO_STAGE_READY);
 	zio->io_state[ZIO_WAIT_DONE] = (stage >= ZIO_STAGE_DONE);
 
+	zio->io_compress_auto_exploring = B_FALSE;
+	zio->io_compress_auto_delay = 0;
+	zio->io_compress_auto_level = 0;
+
 	if (zb != NULL)
 		zio->io_bookmark = *zb;
 
@@ -1321,7 +1325,11 @@ zio_write_compress(zio_t *zio)
 	/* If it's a compressed write that is not raw, compress the buffer. */
 	if (compress != ZIO_COMPRESS_OFF && psize == lsize) {
 		void *cbuf = zio_buf_alloc(lsize);
-		psize = zio_compress_data(compress, zio->io_abd, cbuf, lsize);
+		if (compress == ZIO_COMPRESS_AUTO) {
+			psize = compress_auto(zio, &compress, zio->io_abd, cbuf, lsize);
+		} else {
+			psize = zio_compress_data(compress, zio->io_abd, cbuf, lsize);
+		}
 		compress = zio_compress_table[compress].bp_value;
 		if (psize == 0 || psize == lsize) {
 			compress = ZIO_COMPRESS_OFF;

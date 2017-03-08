@@ -325,7 +325,8 @@ def get_compstring(c):
                     "ZIO_COMPRESS_LZ4FAST_40","ZIO_COMPRESS_LZ4FAST_50",
                     "ZIO_COMPRESS_LZ4FAST_60","ZIO_COMPRESS_LZ4FAST_70",
                     "ZIO_COMPRESS_LZ4FAST_80","ZIO_COMPRESS_LZ4FAST_90",
-                    "ZIO_COMPRESS_LZ4FAST_100","ZIO_COMPRESS_META_FUNCTIONS"]
+                    "ZIO_COMPRESS_LZ4FAST_100","ZIO_COMPRESS_AUTO",
+                    "ZIO_COMPRESS_META_FUNCTIONS"]
 
     # If "-rr" option is used, don't convert to string representation
     if raw > 1:

@@ -87,6 +87,7 @@ zio_compress_info_t zio_compress_table[ZIO_COMPRESS_META_FUNCTIONS] = {
 	{"lz4fast-80",	80,	lz4_compress_zfs,	lz4_decompress_zfs, ZIO_COMPRESS_LZ4},
 	{"lz4fast-90",	90,	lz4_compress_zfs,	lz4_decompress_zfs, ZIO_COMPRESS_LZ4},
 	{"lz4fast-100",	100,lz4_compress_zfs,	lz4_decompress_zfs, ZIO_COMPRESS_LZ4},
+	{"auto",		0,	NULL,		NULL, ZIO_COMPRESS_AUTO}
 };
 
 enum zio_compress
