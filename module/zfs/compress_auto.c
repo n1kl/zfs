@@ -28,14 +28,6 @@
 enum zio_compress ac_compress[COMPRESS_AUTO_LEVELS] = {
 	ZIO_COMPRESS_LZ4,
 	ZIO_COMPRESS_GZIP_1,
-	ZIO_COMPRESS_GZIP_2,
-	ZIO_COMPRESS_GZIP_3,
-	ZIO_COMPRESS_GZIP_4,
-	ZIO_COMPRESS_GZIP_5,
-	ZIO_COMPRESS_GZIP_6,
-	ZIO_COMPRESS_GZIP_7,
-	ZIO_COMPRESS_GZIP_8,
-	ZIO_COMPRESS_GZIP_9
 };
 
 
@@ -66,7 +58,8 @@ uint64_t compress_auto_min_queue_delay(vdev_t *vd, uint64_t offset) {
 			vd_queued_size_write = 0;
 		}
 		if (vd_writespeed) {
-			return (vd_queued_size_write * 1000l * 1000l * 1000l) / vd_writespeed;
+			uint64_t trans = 1000 * 1000 * 1000;
+			return (vd_queued_size_write * trans) / vd_writespeed;
 		}
 		return 0;
 	} else {

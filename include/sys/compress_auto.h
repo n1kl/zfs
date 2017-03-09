@@ -23,7 +23,7 @@
 #ifndef _SYS_AUTO_COMPRESS_H
 #define _SYS_AUTO_COMPRESS_H
 
-#define COMPRESS_AUTO_LEVELS 10
+#define COMPRESS_AUTO_LEVELS 2
 
 #include <sys/spa.h>
 #include <sys/zio.h>
