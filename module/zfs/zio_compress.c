@@ -87,7 +87,31 @@ zio_compress_info_t zio_compress_table[ZIO_COMPRESS_META_FUNCTIONS] = {
 	{"lz4fast-80",	80,	lz4_compress_zfs,	lz4_decompress_zfs, ZIO_COMPRESS_LZ4},
 	{"lz4fast-90",	90,	lz4_compress_zfs,	lz4_decompress_zfs, ZIO_COMPRESS_LZ4},
 	{"lz4fast-100",	100,lz4_compress_zfs,	lz4_decompress_zfs, ZIO_COMPRESS_LZ4},
-	{"auto",		0,	NULL,		NULL, ZIO_COMPRESS_AUTO}
+	{"auto",		0,	NULL,		NULL,	ZIO_COMPRESS_AUTO},
+	{"qos-10",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_10},
+	{"qos-20",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_20},
+	{"qos-30",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_30},
+	{"qos-40",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_40},
+	{"qos-50",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_50},
+	{"qos-100",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_100},
+	{"qos-150",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_150},
+	{"qos-200",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_200},
+	{"qos-250",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_250},
+	{"qos-300",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_300},
+	{"qos-350",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_350},
+	{"qos-400",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_400},
+	{"qos-450",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_450},
+	{"qos-500",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_500},
+	{"qos-550",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_550},
+	{"qos-600",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_600},
+	{"qos-650",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_650},
+	{"qos-700",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_700},
+	{"qos-750",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_750},
+	{"qos-800",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_800},
+	{"qos-850",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_850},
+	{"qos-900",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_900},
+	{"qos-950",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_950},
+	{"qos-1000",		0,	NULL,		NULL,	ZIO_COMPRESS_QOS_1000}
 };
 
 enum zio_compress

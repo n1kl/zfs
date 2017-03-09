@@ -325,8 +325,21 @@ def get_compstring(c):
                     "ZIO_COMPRESS_LZ4FAST_40","ZIO_COMPRESS_LZ4FAST_50",
                     "ZIO_COMPRESS_LZ4FAST_60","ZIO_COMPRESS_LZ4FAST_70",
                     "ZIO_COMPRESS_LZ4FAST_80","ZIO_COMPRESS_LZ4FAST_90",
-                    "ZIO_COMPRESS_LZ4FAST_100","ZIO_COMPRESS_AUTO",
-                    "ZIO_COMPRESS_META_FUNCTIONS"]
+                    "ZIO_COMPRESS_LZ4FAST_100",
+                    "ZIO_COMPRESS_AUTO",
+  					"ZIO_COMPRESS_QOS_10",
+                    "ZIO_COMPRESS_QOS_20","ZIO_COMPRESS_QOS_30",
+                    "ZIO_COMPRESS_QOS_40","ZIO_COMPRESS_QOS_50",
+                    "ZIO_COMPRESS_QOS_100","ZIO_COMPRESS_QOS_150",
+                    "ZIO_COMPRESS_QOS_200","ZIO_COMPRESS_QOS_250",
+                    "ZIO_COMPRESS_QOS_300","ZIO_COMPRESS_QOS_350",
+                    "ZIO_COMPRESS_QOS_400","ZIO_COMPRESS_QOS_450",
+                    "ZIO_COMPRESS_QOS_500","ZIO_COMPRESS_QOS_550",
+                    "ZIO_COMPRESS_QOS_600","ZIO_COMPRESS_QOS_650",
+                    "ZIO_COMPRESS_QOS_700","ZIO_COMPRESS_QOS_750",
+                    "ZIO_COMPRESS_QOS_800","ZIO_COMPRESS_QOS_850",
+                    "ZIO_COMPRESS_QOS_900","ZIO_COMPRESS_QOS_950",
+                    "ZIO_COMPRESS_QOS_1000","ZIO_COMPRESS_META_FUNCTIONS"]
 
     # If "-rr" option is used, don't convert to string representation
     if raw > 1:

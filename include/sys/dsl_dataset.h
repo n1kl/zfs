@@ -348,6 +348,8 @@ int dsl_dataset_activate_lz4fast_compress(const char *ddname);
 
 int dsl_dataset_activate_compress_auto(const char *ddname);
 
+int dsl_dataset_activate_compress_qos(const char *ddname);
+
 void dsl_dataset_deactivate_feature(uint64_t dsobj,
     spa_feature_t f, dmu_tx_t *tx);
 

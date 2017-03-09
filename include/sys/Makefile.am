@@ -12,6 +12,7 @@ COMMON_H = \
 	$(top_srcdir)/include/sys/bptree.h \
 	$(top_srcdir)/include/sys/bqueue.h \
 	$(top_srcdir)/include/sys/compress_auto.h \
+	$(top_srcdir)/include/sys/compress_qos.h \
 	$(top_srcdir)/include/sys/dbuf.h \
 	$(top_srcdir)/include/sys/ddt.h \
 	$(top_srcdir)/include/sys/dmu.h \

@@ -26,6 +26,10 @@
 
 
 enum zio_compress ac_compress[COMPRESS_AUTO_LEVELS] = {
+	ZIO_COMPRESS_LZ4FAST_100,
+	ZIO_COMPRESS_LZ4FAST_20,
+	ZIO_COMPRESS_LZ4FAST_10,
+	ZIO_COMPRESS_LZ4FAST_5,
 	ZIO_COMPRESS_LZ4,
 	ZIO_COMPRESS_GZIP_1,
 	ZIO_COMPRESS_GZIP_2,
@@ -95,14 +99,14 @@ void compress_auto_update(zio_t *zio)
 			int n = 10;
 			uint64_t trans = 1000 * 1000 * 1000;
 			uint64_t compressBps = (zio->io_lsize * trans) / zio->io_compress_auto_delay;
-			compress_auto_calc_avg_nozero(compressBps, &pio->io_compress_auto_Bps[zio->io_compress_auto_level], n);
+			compress_auto_calc_avg_nozero(compressBps, &pio->io_compress_auto_Bps[zio->io_compress_level], n);
 		}
 
 		if (zio->io_compress_auto_exploring) {
 			pio->io_compress_auto_exploring = B_FALSE;
 			zio->io_compress_auto_exploring = B_FALSE;
 		} else {
-			pio->io_compress_auto_level = zio->io_compress_auto_level;
+			pio->io_compress_level = zio->io_compress_level;
 		}
 
 	}
@@ -126,7 +130,7 @@ compress_auto(zio_t *zio, enum zio_compress *c, abd_t *src, void *dst, size_t s_
 
 
 	if (pio) {
-		int level = pio->io_compress_auto_level;
+		int level = pio->io_compress_level;
 
 		if (pio->io_compress_auto_Bps[level]) {
 			uint64_t trans = 1000 * 1000 * 1000;
@@ -155,7 +159,7 @@ compress_auto(zio_t *zio, enum zio_compress *c, abd_t *src, void *dst, size_t s_
 		}
 
 		*c = ac_compress[level];
-		zio->io_compress_auto_level = level;
+		zio->io_compress_level = level;
 	}
 
 	psize = zio_compress_data(*c, src, dst, s_len);

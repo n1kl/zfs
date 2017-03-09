@@ -43,6 +43,8 @@
 #include <sys/time.h>
 #include <sys/trace_zio.h>
 #include <sys/abd.h>
+#include <sys/compress_auto.h>
+#include <sys/compress_qos.h>
 
 /*
  * ==========================================================================
@@ -639,9 +641,7 @@ zio_create(zio_t *pio, spa_t *spa, uint64_t txg, const blkptr_t *bp,
 	zio->io_state[ZIO_WAIT_READY] = (stage >= ZIO_STAGE_READY);
 	zio->io_state[ZIO_WAIT_DONE] = (stage >= ZIO_STAGE_DONE);
 
-	zio->io_compress_auto_exploring = B_FALSE;
-	zio->io_compress_auto_delay = 0;
-	zio->io_compress_auto_level = 0;
+	zio->io_qos_timestamp = gethrtime();
 
 	if (zb != NULL)
 		zio->io_bookmark = *zb;
@@ -1327,6 +1327,8 @@ zio_write_compress(zio_t *zio)
 		void *cbuf = zio_buf_alloc(lsize);
 		if (compress == ZIO_COMPRESS_AUTO) {
 			psize = compress_auto(zio, &compress, zio->io_abd, cbuf, lsize);
+		} else 	if (compress >= ZIO_COMPRESS_QOS_10 && compress <= ZIO_COMPRESS_QOS_1000) {
+			psize = qos_compress(zio, &compress, zio->io_abd, cbuf, lsize);
 		} else {
 			psize = zio_compress_data(compress, zio->io_abd, cbuf, lsize);
 		}
