@@ -3666,6 +3666,7 @@ dsl_dataset_has_resume_receive_state(dsl_dataset_t *ds)
 	    ds->ds_object, DS_FIELD_RESUME_TOGUID) == 0);
 }
 
+
 static int
 dsl_dataset_actv_compress_auto_check(void *arg, dmu_tx_t *tx)
 {

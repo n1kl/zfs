@@ -2416,7 +2416,7 @@ zfs_prop_set_special(const char *dsname, zprop_source_t source,
 			err = -1;
 		break;
 	case ZFS_PROP_COMPRESSION:
-		if (intval==ZIO_COMPRESS_AUTO){
+		if (intval == ZIO_COMPRESS_AUTO) {
 			dsl_dataset_activate_compress_auto(dsname);
 		}
 		break;

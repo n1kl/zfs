@@ -58,7 +58,7 @@ zio_compress_info_t zio_compress_table[ZIO_COMPRESS_META_FUNCTIONS] = {
 	{"gzip-9",		9,	gzip_compress,	gzip_decompress},
 	{"zle",			64,	zle_compress,	zle_decompress},
 	{"lz4",			0,	lz4_compress_zfs, lz4_decompress_zfs},
-	{"compressfunctionsplaceholder",		0,	NULL,		NULL},
+	{"compressfunctionsplaceholder", 0, NULL,	NULL},
 	{"auto",		0,	NULL,		NULL}
 };
 
