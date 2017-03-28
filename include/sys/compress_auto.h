@@ -19,17 +19,16 @@
  * CDDL HEADER END
  */
 
-
 #ifndef _SYS_AUTO_COMPRESS_H
-#define _SYS_AUTO_COMPRESS_H
+#define	_SYS_AUTO_COMPRESS_H
 
-#define COMPRESS_AUTO_LEVELS 2
+#define	COMPRESS_AUTO_LEVELS 10
 
 #include <sys/spa.h>
 #include <sys/zio.h>
 
-
-size_t compress_auto(zio_t *zio,enum zio_compress *c, abd_t *src, void *dst, size_t s_len);
+size_t compress_auto(zio_t *zio, enum zio_compress *c, abd_t *src, void *dst,
+	size_t s_len);
 void compress_auto_calc_avg_nozero(uint64_t act, uint64_t *res, int n);
 
 #endif /* _SYS_AUTO_COMPRESS_H */

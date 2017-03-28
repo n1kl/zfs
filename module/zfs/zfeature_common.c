@@ -199,9 +199,10 @@ zpool_feature_init(void)
 			SPA_FEATURE_NONE
 	};
 	zfeature_register(SPA_FEATURE_COMPRESS_AUTO,
-		    "org.zfsonlinux:compress_auto", "compress_auto",
-		    "auto compression algorithm support.",
-			ZFEATURE_FLAG_PER_DATASET | ZFEATURE_FLAG_READONLY_COMPAT, compress_auto_deps);
+	    "org.zfsonlinux:compress_auto", "compress_auto",
+	    "auto compression algorithm support.",
+	    ZFEATURE_FLAG_PER_DATASET | ZFEATURE_FLAG_READONLY_COMPAT,
+	    compress_auto_deps);
 	}
 
 	zfeature_register(SPA_FEATURE_SPACEMAP_HISTOGRAM,

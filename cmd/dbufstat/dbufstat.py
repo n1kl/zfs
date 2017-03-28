@@ -303,15 +303,15 @@ def get_typestring(t):
 
 
 def get_compstring(c):
-    comp_strings = ["ZIO_COMPRESS_INHERIT", "ZIO_COMPRESS_ON",
-                    "ZIO_COMPRESS_OFF",     "ZIO_COMPRESS_LZJB",
-                    "ZIO_COMPRESS_EMPTY",   "ZIO_COMPRESS_GZIP_1",
-                    "ZIO_COMPRESS_GZIP_2",  "ZIO_COMPRESS_GZIP_3",
-                    "ZIO_COMPRESS_GZIP_4",  "ZIO_COMPRESS_GZIP_5",
-                    "ZIO_COMPRESS_GZIP_6",  "ZIO_COMPRESS_GZIP_7",
-                    "ZIO_COMPRESS_GZIP_8",  "ZIO_COMPRESS_GZIP_9",
-                    "ZIO_COMPRESS_ZLE",     "ZIO_COMPRESS_LZ4",
-                    "ZIO_COMPRESS_FUNCTION","ZIO_COMPRESS_AUTO",
+    comp_strings = ["ZIO_COMPRESS_INHERIT",  "ZIO_COMPRESS_ON",
+                    "ZIO_COMPRESS_OFF",      "ZIO_COMPRESS_LZJB",
+                    "ZIO_COMPRESS_EMPTY",    "ZIO_COMPRESS_GZIP_1",
+                    "ZIO_COMPRESS_GZIP_2",   "ZIO_COMPRESS_GZIP_3",
+                    "ZIO_COMPRESS_GZIP_4",   "ZIO_COMPRESS_GZIP_5",
+                    "ZIO_COMPRESS_GZIP_6",   "ZIO_COMPRESS_GZIP_7",
+                    "ZIO_COMPRESS_GZIP_8",   "ZIO_COMPRESS_GZIP_9",
+                    "ZIO_COMPRESS_ZLE",      "ZIO_COMPRESS_LZ4",
+                    "ZIO_COMPRESS_FUNCTION", "ZIO_COMPRESS_AUTO",
                     "ZIO_COMPRESS_META_FUNCTIONS"]
 
     # If "-rr" option is used, don't convert to string representation
@@ -577,6 +577,7 @@ def main():
 
     if tflag:
         print_dict(types_build_dict(sys.stdin))
+
 
 if __name__ == '__main__':
     main()
