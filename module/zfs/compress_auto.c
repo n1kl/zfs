@@ -47,7 +47,7 @@ void compress_auto_calc_avg_nozero(uint64_t act, uint64_t *res, int n) {
 	}
 }
 
-uint64_t compress_auto_min_queue_delay(vdev_t *vd, uint64_t offset) {
+uint64_t compress_auto_min_queue_delay(vdev_t *vd, uint64_t size) {
 
 	uint64_t min_time = 0;
 
@@ -60,9 +60,9 @@ uint64_t compress_auto_min_queue_delay(vdev_t *vd, uint64_t offset) {
 
 		uint32_t max_queue_depth = zfs_vdev_async_write_max_active *
 			    zfs_vdev_queue_depth_pct / 100;
-		// keep 50 zios in queue
-		if (vd_queued_size_write >= offset * (max_queue_depth / 2)) {
-			vd_queued_size_write -= offset * (max_queue_depth / 2);
+		// keep 25 zios in queue * compressionfactor about 2
+		if (vd_queued_size_write >= size * (max_queue_depth / 4)) {
+			vd_queued_size_write -= size * (max_queue_depth / 4);
 		} else {
 			vd_queued_size_write = 0;
 		}
@@ -96,7 +96,7 @@ uint64_t compress_auto_min_queue_delay(vdev_t *vd, uint64_t offset) {
 		int i;
 		for (i = 0; i < vd->vdev_children; i++) {
 			uint64_t time = compress_auto_min_queue_delay(
-				vd->vdev_child[i], offset);
+				vd->vdev_child[i], size);
 			if (time) {
 				if (min_time == 0) {
 					min_time = time;
@@ -129,6 +129,9 @@ void compress_auto_update(zio_t *zio) {
 			pio->io_compress_level = zio->io_compress_level;
 		}
 
+		//MTAC print
+			dprintf(",MTACC:, [ts; compressdel; level],%llu,%llu,%d",gethrtime(),zio->io_compress_auto_delay,zio->io_compress_level);
+
 	}
 }
 
@@ -147,8 +150,9 @@ size_t compress_auto(zio_t *zio, enum zio_compress *c, abd_t *src, void *dst,
 
 	*c = ac_compress[0];
 
+	int level = 0;
 	if (pio != NULL) {
-		int level = pio->io_compress_level;
+		level = pio->io_compress_level;
 
 		if (pio->io_compress_auto_Bps[level] != 0) {
 			uint64_t trans = 1000 * 1000 * 1000;
@@ -198,6 +202,10 @@ size_t compress_auto(zio_t *zio, enum zio_compress *c, abd_t *src, void *dst,
 
 	psize = zio_compress_data(*c, src, dst, s_len);
 	zio->io_compress_auto_delay = gethrtime() - ac_compress_begin;
+
+	dprintf(",MTACAC:, [ts;exp_avg;init_compress; compress_avgdur; compressBps; compress;level],%llu,%llu,%d,%llu,%llu,%d,%d",gethrtime(),exp_queue_delay,pio->io_compress_level,pio->io_compress_auto_Bps[level] ? (zio->io_lsize*1000l*1000l*1000l)/pio->io_compress_auto_Bps[level] : 0,pio->io_compress_auto_Bps[level],*c,level);
+
+
 	compress_auto_update(zio);
 
 	return (psize);
