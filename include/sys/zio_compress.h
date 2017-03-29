@@ -51,7 +51,9 @@ enum zio_compress {
 	ZIO_COMPRESS_GZIP_9,
 	ZIO_COMPRESS_ZLE,
 	ZIO_COMPRESS_LZ4,
-	ZIO_COMPRESS_FUNCTIONS
+	ZIO_COMPRESS_FUNCTIONS,
+	ZIO_COMPRESS_AUTO,
+	ZIO_COMPRESS_META_FUNCTIONS
 };
 
 /* Common signature for all zio compress functions. */
@@ -78,7 +80,7 @@ typedef const struct zio_compress_info {
 	zio_decompress_func_t		*ci_decompress;
 } zio_compress_info_t;
 
-extern zio_compress_info_t zio_compress_table[ZIO_COMPRESS_FUNCTIONS];
+extern zio_compress_info_t zio_compress_table[ZIO_COMPRESS_META_FUNCTIONS];
 
 /*
  * lz4 compression init & free

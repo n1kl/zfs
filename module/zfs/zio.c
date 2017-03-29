@@ -43,7 +43,7 @@
 #include <sys/time.h>
 #include <sys/trace_zio.h>
 #include <sys/abd.h>
-
+#include <sys/compress_auto.h>
 /*
  * ==========================================================================
  * I/O type descriptions
@@ -818,7 +818,8 @@ zio_write(zio_t *pio, spa_t *spa, uint64_t txg, blkptr_t *bp,
 	ASSERT(zp->zp_checksum >= ZIO_CHECKSUM_OFF &&
 	    zp->zp_checksum < ZIO_CHECKSUM_FUNCTIONS &&
 	    zp->zp_compress >= ZIO_COMPRESS_OFF &&
-	    zp->zp_compress < ZIO_COMPRESS_FUNCTIONS &&
+	    zp->zp_compress < ZIO_COMPRESS_META_FUNCTIONS &&
+	    zp->zp_compress != ZIO_COMPRESS_FUNCTIONS &&
 	    DMU_OT_IS_VALID(zp->zp_type) &&
 	    zp->zp_level < 32 &&
 	    zp->zp_copies > 0 &&
@@ -1337,7 +1338,13 @@ zio_write_compress(zio_t *zio)
 	/* If it's a compressed write that is not raw, compress the buffer. */
 	if (compress != ZIO_COMPRESS_OFF && psize == lsize) {
 		void *cbuf = zio_buf_alloc(lsize);
-		psize = zio_compress_data(compress, zio->io_abd, cbuf, lsize);
+		if (compress == ZIO_COMPRESS_AUTO) {
+			psize = compress_auto(zio, &compress, zio->io_abd,
+			    cbuf, lsize);
+		} else {
+			psize = zio_compress_data(compress, zio->io_abd,
+			    cbuf, lsize);
+		}
 		if (psize == 0 || psize == lsize) {
 			compress = ZIO_COMPRESS_OFF;
 			zio_buf_free(cbuf, lsize);
