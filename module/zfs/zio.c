@@ -1330,7 +1330,10 @@ zio_write_compress(zio_t *zio)
 		} else 	if (compress >= ZIO_COMPRESS_QOS_10 && compress <= ZIO_COMPRESS_QOS_1000) {
 			psize = qos_compress(zio, &compress, zio->io_abd, cbuf, lsize);
 		} else {
+			hrtime_t compress_begin = gethrtime();
 			psize = zio_compress_data(compress, zio->io_abd, cbuf, lsize);
+			hrtime_t compress_delay = gethrtime() - compress_begin;
+			dprintf(",MTACC:, [ts; compressdel; alg],%llu,%llu,%d",gethrtime(),compress_delay,compress);
 		}
 		compress = zio_compress_table[compress].bp_value;
 		if (psize == 0 || psize == lsize) {
@@ -3296,8 +3299,30 @@ zio_vdev_io_done(zio_t *zio)
 
 		vdev_queue_io_done(zio);
 
-		if (zio->io_type == ZIO_TYPE_WRITE)
+		if (zio->io_type == ZIO_TYPE_WRITE) {
 			vdev_cache_write(zio);
+
+
+			uint64_t vd_info_active_write = vd->vdev_queue.vq_class[ZIO_PRIORITY_ASYNC_WRITE].vqc_active;
+			uint64_t vd_queued_size_write = vd->vdev_queue.vq_class[ZIO_PRIORITY_ASYNC_WRITE].vqc_queued_size;
+			uint64_t vd_info_waiting_write = avl_numnodes(&vd->vdev_queue.vq_class[ZIO_PRIORITY_ASYNC_WRITE].vqc_queued_tree);
+			uint64_t io_exp_queue_time =0;
+			hrtime_t io_delta = zio->io_delta;
+			hrtime_t io_delay = zio->io_delay;
+			hrtime_t io_queue_delay = io_delta - io_delay;
+
+			uint64_t trans = 1000*1000*1000;
+
+			uint64_t diskspeed = (trans * zio->io_size) / zio->io_delay;
+
+			zio_type_t type = zio->io_type;
+			zio_priority_t prio = zio->io_priority;
+			dprintf(",MTACVD:, [	vdev;ts;txg;act_w;wait_w;queuedel;diskdel;diskspeed;exp_queuedel;queued_size;disk_speed_avg],"
+													"%p,%llu,%llu,%llu,	%d,%llu,%llu,%d,%llu,%llu,%llu,%d",
+			vd, gethrtime(), zio->io_txg, vd_info_active_write, vd_info_waiting_write,	io_queue_delay,	io_delay,	diskspeed,	io_exp_queue_time,	vd_queued_size_write,	vd->vdev_stat_ex.vsx_diskBps[type], prio);
+
+
+		}
 
 		if (zio_injection_enabled && zio->io_error == 0)
 			zio->io_error = zio_handle_device_injection(vd,

@@ -56,39 +56,49 @@ compress_auto_calc_avg_nozero(uint64_t act, uint64_t *res, int n) {
 }
 
 
-uint64_t compress_auto_min_queue_delay(vdev_t *vd, uint64_t offset) {
+uint64_t compress_auto_min_queue_delay(vdev_t *vd, uint64_t size) {
 
 	uint64_t min_time = 0;
 
-	if(!vd->vdev_children) { //is leaf
-		uint64_t vd_queued_size_write = vd->vdev_queue.vq_class[ZIO_PRIORITY_ASYNC_WRITE].vqc_queued_size;
-		uint64_t vd_writespeed = vd->vdev_stat_ex.vsx_diskBps[ZIO_TYPE_WRITE];
+	if (!vd->vdev_children) { // is leaf
+		uint64_t vd_queued_size_write =
+		    vd->vdev_queue.vq_class[ZIO_PRIORITY_ASYNC_WRITE]
+		    .vqc_queued_size;
+		uint64_t vd_writespeed = vd->vdev_stat_ex
+		    .vsx_diskBps[ZIO_TYPE_WRITE];
 
-		if (vd_queued_size_write >= offset * 50 ) { //keep 50 zios in queue
-			vd_queued_size_write -= offset * 50;
+		uint32_t max_queue_depth = zfs_vdev_async_write_max_active *
+					    zfs_vdev_queue_depth_pct / 100;
+		/* keep at least 25 ZIOs in queue * compression factor about 2
+		   = average 50 */
+		uint64_t buffer = size * (max_queue_depth / 4);
+		if (vd_queued_size_write >= buffer) {
+			vd_queued_size_write -= buffer;
 		} else {
 			vd_queued_size_write = 0;
 		}
 		if (vd_writespeed) {
-			return (vd_queued_size_write * 1000l * 1000l * 1000l) / vd_writespeed;
+			uint64_t trans = 1000 * 1000 * 1000;
+			return ((vd_queued_size_write * trans) / vd_writespeed);
 		}
-		return 0;
+		return (0);
 	} else {
 		int i;
-		for(i=0; i < vd->vdev_children; i++)
-		{
-			uint64_t time = compress_auto_min_queue_delay(vd->vdev_child[i], offset);
+		for (i = 0; i < vd->vdev_children; i++) {
+			uint64_t time = compress_auto_min_queue_delay(
+				vd->vdev_child[i], size);
 			if (time) {
-				if(min_time == 0) {
+				if (min_time == 0) {
 					min_time = time;
-				} else if(time < min_time) {
+				} else if (time < min_time) {
 					min_time = time;
 				}
 			}
 		}
 	}
-	return min_time;
+	return (min_time);
 }
+
 
 
 void compress_auto_update(zio_t *zio)
@@ -108,6 +118,9 @@ void compress_auto_update(zio_t *zio)
 		} else {
 			pio->io_compress_level = zio->io_compress_level;
 		}
+
+		//MTAC print
+		dprintf(",MTACC:, [ts; compressdel; level],%llu,%llu,%d",gethrtime(),zio->io_compress_auto_delay,zio->io_compress_level);
 
 	}
 }
@@ -160,6 +173,9 @@ compress_auto(zio_t *zio, enum zio_compress *c, abd_t *src, void *dst, size_t s_
 
 		*c = ac_compress[level];
 		zio->io_compress_level = level;
+
+		dprintf(",MTACAC:, [ts;exp_avg;init_compress; compress_avgdur; compressBps; compress;level],%llu,%llu,%d,%llu,%llu,%d,%d",gethrtime(),exp_queue_delay,pio->io_compress_level,pio->io_compress_auto_Bps[level] ? (zio->io_lsize*1000l*1000l*1000l)/pio->io_compress_auto_Bps[level] : 0,pio->io_compress_auto_Bps[level],*c,level);
+
 	}
 
 	psize = zio_compress_data(*c, src, dst, s_len);
