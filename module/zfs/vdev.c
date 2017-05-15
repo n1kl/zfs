@@ -3043,15 +3043,9 @@ vdev_stat_update(zio_t *zio, uint64_t psize)
 			}
 
 			if (zio->io_delta && zio->io_delay) {
-
-
-
-
 				uint64_t trans = 1000*1000*1000;
 				int n = 1000; //average over 1000 zios
 				compress_auto_calc_avg_nozero((trans * psize) / zio->io_delay, &vsx->vsx_diskBps[type],n);
-
-
 
 				vsx->vsx_queue_histo[zio->io_priority]
 				    [L_HISTO(zio->io_delta - zio->io_delay)]++;
