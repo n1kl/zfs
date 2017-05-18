@@ -3303,9 +3303,14 @@ zio_vdev_io_done(zio_t *zio)
 			vdev_cache_write(zio);
 
 
-			uint64_t vd_info_active_write = vd->vdev_queue.vq_class[ZIO_PRIORITY_ASYNC_WRITE].vqc_active;
-			uint64_t vd_queued_size_write = vd->vdev_queue.vq_class[ZIO_PRIORITY_ASYNC_WRITE].vqc_queued_size;
-			uint64_t vd_info_waiting_write = avl_numnodes(&vd->vdev_queue.vq_class[ZIO_PRIORITY_ASYNC_WRITE].vqc_queued_tree);
+			uint64_t vd_info_active_write_sync = vd->vdev_queue.vq_class[ZIO_PRIORITY_SYNC_WRITE].vqc_active;
+			uint64_t vd_queued_size_write_sync = vd->vdev_queue.vq_class[ZIO_PRIORITY_SYNC_WRITE].vqc_queued_size;
+			uint64_t vd_info_waiting_write_sync = avl_numnodes(&vd->vdev_queue.vq_class[ZIO_PRIORITY_SYNC_WRITE].vqc_queued_tree);
+
+			uint64_t vd_info_active_write_async = vd->vdev_queue.vq_class[ZIO_PRIORITY_ASYNC_WRITE].vqc_active;
+			uint64_t vd_queued_size_write_async = vd->vdev_queue.vq_class[ZIO_PRIORITY_ASYNC_WRITE].vqc_queued_size;
+			uint64_t vd_info_waiting_write_async = avl_numnodes(&vd->vdev_queue.vq_class[ZIO_PRIORITY_ASYNC_WRITE].vqc_queued_tree);
+
 			uint64_t io_exp_queue_time =0;
 			hrtime_t io_delta = zio->io_delta;
 			hrtime_t io_delay = zio->io_delay;
@@ -3317,9 +3322,9 @@ zio_vdev_io_done(zio_t *zio)
 
 			zio_type_t type = zio->io_type;
 			zio_priority_t prio = zio->io_priority;
-			dprintf(",MTACVD:, [	vdev;ts;txg;act_w;wait_w;queuedel;diskdel;diskspeed;exp_queuedel;queued_size;disk_speed_avg],"
-													"%p,%llu,%llu,%llu,	%d,%llu,%llu,%d,%llu,%llu,%llu,%d",
-			vd, gethrtime(), zio->io_txg, vd_info_active_write, vd_info_waiting_write,	io_queue_delay,	io_delay,	diskspeed,	io_exp_queue_time,	vd_queued_size_write,	vd->vdev_stat_ex.vsx_diskBps[type], prio);
+			dprintf(",MTACVD:, [	vdev;ts;txg;act_sync;wait_sync;queued_size_sync;act_async;wait_async;queued_size_async;queuedel;diskdel;diskspeed;exp_queuedel;disk_speed_avg],"
+											"%p,%llu,%llu,	%llu,%llu,%llu,%llu,%llu,%llu,		%llu,%llu,%d,%llu,%llu,%d",
+			vd, gethrtime(), zio->io_txg, vd_info_active_write_sync, vd_info_waiting_write_sync,vd_queued_size_write_sync,vd_info_active_write_async, vd_info_waiting_write_async,vd_queued_size_write_async, io_queue_delay,	io_delay,	diskspeed,	io_exp_queue_time,	vd->vdev_stat_ex.vsx_diskBps[type], prio);
 
 
 		}

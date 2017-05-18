@@ -56,18 +56,20 @@ compress_auto_calc_avg_nozero(uint64_t act, uint64_t *res, int n) {
 }
 
 
-uint64_t compress_auto_min_queue_delay(vdev_t *vd, uint64_t size) {
+uint64_t compress_auto_min_queue_delay(vdev_t *vd, uint64_t size, zio_priority_t io_priority, spa_t *spa) {
 
 	uint64_t min_time = 0;
 
 	if (!vd->vdev_children) { // is leaf
 		uint64_t vd_queued_size_write =
-		    vd->vdev_queue.vq_class[ZIO_PRIORITY_ASYNC_WRITE]
+		    vd->vdev_queue.vq_class[io_priority]
 		    .vqc_queued_size;
 		uint64_t vd_writespeed = vd->vdev_stat_ex
 		    .vsx_diskBps[ZIO_TYPE_WRITE];
 
-		uint32_t max_queue_depth = zfs_vdev_async_write_max_active *
+		//TODO serperate async and sync
+		//uint32_t max_active = vdev_queue_class_max_active(spa, io_priority);
+		uint32_t max_queue_depth = zfs_vdev_sync_write_max_active *
 					    zfs_vdev_queue_depth_pct / 100;
 		/* keep at least 25 ZIOs in queue * compression factor about 2
 		   = average 50 */
@@ -86,7 +88,7 @@ uint64_t compress_auto_min_queue_delay(vdev_t *vd, uint64_t size) {
 		int i;
 		for (i = 0; i < vd->vdev_children; i++) {
 			uint64_t time = compress_auto_min_queue_delay(
-				vd->vdev_child[i], size);
+				vd->vdev_child[i], size,io_priority,spa);
 			if (time) {
 				if (min_time == 0) {
 					min_time = time;
@@ -135,7 +137,7 @@ compress_auto(zio_t *zio, enum zio_compress *c, abd_t *src, void *dst, size_t s_
 	vdev_t *rvd = spa->spa_root_vdev;
 
 	zio_t *pio = zio_unique_parent(zio);
-	uint64_t exp_queue_delay = compress_auto_min_queue_delay(rvd,zio->io_lsize);
+	uint64_t exp_queue_delay = compress_auto_min_queue_delay(rvd,zio->io_lsize,zio->io_priority,zio->io_spa);
 
 	zio->io_temp_parent = pio;
 

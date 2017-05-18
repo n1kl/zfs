@@ -823,6 +823,18 @@ zfs_write(struct inode *ip, uio_t *uio, int ioflag, cred_t *cr)
 					case ZIO_COMPRESS_QOS_50:
 						through_MBps = 50;
 						break;
+					case ZIO_COMPRESS_QOS_60:
+						through_MBps = 60;
+						break;
+					case ZIO_COMPRESS_QOS_70:
+						through_MBps = 70;
+						break;
+					case ZIO_COMPRESS_QOS_80:
+						through_MBps = 80;
+						break;
+					case ZIO_COMPRESS_QOS_90:
+						through_MBps = 90;
+						break;
 					case ZIO_COMPRESS_QOS_100:
 						through_MBps = 100;
 						break;

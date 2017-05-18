@@ -92,6 +92,18 @@ qos_compress(zio_t *zio, enum zio_compress *c, abd_t *src, void *dst, size_t s_l
 		case ZIO_COMPRESS_QOS_50:
 			*c = qos_compress_select(zio, 50);
 			break;
+		case ZIO_COMPRESS_QOS_60:
+			*c = qos_compress_select(zio, 60);
+			break;
+		case ZIO_COMPRESS_QOS_70:
+			*c = qos_compress_select(zio, 70);
+			break;
+		case ZIO_COMPRESS_QOS_80:
+			*c = qos_compress_select(zio, 80);
+			break;
+		case ZIO_COMPRESS_QOS_90:
+			*c = qos_compress_select(zio, 90);
+			break;
 		case ZIO_COMPRESS_QOS_100:
 			*c = qos_compress_select(zio, 100);
 			break;
